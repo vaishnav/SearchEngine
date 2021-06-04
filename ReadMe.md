@@ -1,5 +1,10 @@
 # Welcome to search engine project
 
+### Install pipenv first
+```
+    pip3 install pipenv
+```
+
 ### Installing dependencies 
 ```
     pipenv lock
