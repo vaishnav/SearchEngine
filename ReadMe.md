@@ -23,3 +23,9 @@ records the new requirements to the Pipfile.lock file and installs the missing d
 starts the python virtual environment
 
 #### NOTE- For any further operation inside virtual environment use "pipenv" instead of "pip"
+
+#### current project is made for wikipedia but i am using xkcd for testing as it has less number of links 
+
+#### for using with wikipedia remove comments from line 7,12 in views.py of engine app
+
+### go to http://127.0.0.1:8000/engine/crawl for seeing crawled results
