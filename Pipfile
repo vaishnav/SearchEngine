@@ -9,6 +9,8 @@ requests = "*"
 beautifulsoup4 = "*"
 lxml = "*"
 pickle5 = "*"
+html2text = "*"
+nltk = "*"
 
 [dev-packages]
 
