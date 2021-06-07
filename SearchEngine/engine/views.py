@@ -46,7 +46,7 @@ def crawl(request):
 #filters html2Text Html to text ignoring tags and links
 #lemmetizer eleminates synonyms, stems a word to its root word
 #stopword eleminates common words in english lang.
-    def filter_page(page):
+def filter_page(page):
     h = html2text.HTML2Text()
     h.ignore_links = True
     lemmatizer  = WordNetLemmatizer()
