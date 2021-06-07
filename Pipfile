@@ -8,6 +8,8 @@ django = "==3.2.4"
 requests = "*"
 beautifulsoup4 = "*"
 lxml = "*"
+html2text = "*"
+nltk = "*"
 
 [dev-packages]
 
