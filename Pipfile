@@ -8,6 +8,7 @@ django = "==3.2.4"
 requests = "*"
 beautifulsoup4 = "*"
 lxml = "*"
+pickle5 = "*"
 
 [dev-packages]
 

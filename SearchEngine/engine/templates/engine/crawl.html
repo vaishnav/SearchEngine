@@ -10,7 +10,7 @@
     <h1>Sites Crawled</h1>
     <ul>
         {% for site in sites %}
-            <li>{{ site }}</li>
+            <a href="{{ site }}">{{ site }}</a>
         {% empty %}
             <li>No Crawled</li>
         {% endfor %}
