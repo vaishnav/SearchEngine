@@ -1,6 +1,10 @@
 from django.shortcuts import render
 import requests
 from bs4 import BeautifulSoup as bsf
+import html2text
+from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 
 
 # Create your views here.
@@ -38,3 +42,20 @@ def crawl(request):
     return render(request, 'engine/crawl.html',{
         "sites": list(crawled.keys())
     })
+
+#filters html2Text Html to text ignoring tags and links
+#lemmetizer eleminates synonyms, stems a word to its root word
+#stopword eleminates common words in english lang.
+def filter_page(page):
+    h = html2text.HTML2Text()
+    h.ignore_links = True
+    lemmatizer  = WordNetLemmatizer()
+    stop_words = set(stopwords.words("english"))
+    txt = h.handle(page)
+    words = word_tokenize(txt)
+    filtered_sentence = []
+    for w in words:
+        if w not in stop_words:
+            if w not in filtered_sentence:
+                filtered_sentence.append(lemmatizer.lemmatize(w))
+    return filtered_sentence
