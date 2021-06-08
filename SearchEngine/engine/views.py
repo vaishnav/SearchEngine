@@ -7,7 +7,8 @@ import html2text
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-
+from nltk import RegexpTokenizer
+from collections import Counter
 
 # Create your views here.
 # link_site = 'https://xkcd.com/2173/'
@@ -70,10 +71,14 @@ def filter_page(page):
     lemmatizer  = WordNetLemmatizer()
     stop_words = set(stopwords.words("english"))
     txt = h.handle(page)
-    words = word_tokenize(txt)
+    wf = 1
+    tokenizer = RegexpTokenizer(r"\w+")
+    words = tokenizer.tokenize(txt)
     filtered_sentence = []
     for w in words:
         if w not in stop_words:
-            if w not in filtered_sentence:
-                filtered_sentence.append(lemmatizer.lemmatize(w))
-    return filtered_sentence
+            filtered_sentence.append(lemmatizer.lemmatize(w))
+    FW = dict(Counter(sorted(filtered_sentence)))
+    return FW
+    #returns a dictionary with word frequency
+
