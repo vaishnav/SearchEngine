@@ -80,21 +80,20 @@ def crawl(request):
 #filters html2Text Html to text ignoring tags and links
 #lemmetizer eleminates synonyms, stems a word to its root word
 #stopword eleminates common words in english lang.
-def filter_page(page):
+def filter_page(site):
+    req = requests.get(site)
     h = html2text.HTML2Text()
     h.ignore_links = True
     lemmatizer  = WordNetLemmatizer()
     stop_words = set(stopwords.words("english"))
-    txt = h.handle(page)
-    wf = 1
-    tokenizer = RegexpTokenizer(r"\w+")
+    txt = h.handle(req.text)
+    tokenizer = RegexpTokenizer(r"[a-zA-Z]+|[1-2][7-9][0-9][0-9]") 
     words = tokenizer.tokenize(txt)
     filtered_sentence = []
     for w in words:
         if w not in stop_words:
-            filtered_sentence.append(lemmatizer.lemmatize(w))
-    FW = dict(Counter(sorted(filtered_sentence)))
-    return FW
+            filtered_sentence.append(lemmatizer.lemmatize(w.lower()))
+    return dict(Counter(sorted(filtered_sentence)))
     #returns a dictionary with word frequency
 
 
