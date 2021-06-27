@@ -30,6 +30,10 @@ link_site = 'https://en.wikipedia.org'
 prefix_link = 'https://en.wikipedia.org'
 
 
+def index(request):
+    return render(request,"engine/index.html")
+
+
 def get_crawled():
     try:
         pickle_in = open("crawled.pickle","rb")
@@ -154,3 +158,6 @@ def rank(request):
     return render(request,'engine/rank.html',{
         "pagerank":pagerank
     })    
+
+
+    

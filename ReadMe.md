@@ -30,3 +30,4 @@ starts the python virtual environment
 
 ### go to http://127.0.0.1:8000/engine/crawl for seeing crawled results
 ### go to http://127.0.0.1:8000/engine/rank for seeing ranking results for crawled pages
+### go to  http://127.0.0.1:8000/engine/index to view the index page
