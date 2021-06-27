@@ -9,6 +9,10 @@ from nltk.stem import WordNetLemmatizer
 from nltk import RegexpTokenizer
 from collections import Counter
 
+from sklearn.feature_extraction.text import TfidfVectorizer
+import pandas as pd
+import numpy as np
+
 import pickle
 import os
 import random
@@ -76,10 +80,8 @@ def crawl(request):
     return render(request, 'engine/crawl.html',{
         "sites": list(crawled.keys())
     })
+#SHIVAM"S CODE
 
-#filters html2Text Html to text ignoring tags and links
-#lemmetizer eleminates synonyms, stems a word to its root word
-#stopword eleminates common words in english lang.
 def filter_page(site):
     req = requests.get(site)
     h = html2text.HTML2Text()
@@ -93,8 +95,32 @@ def filter_page(site):
     for w in words:
         if w not in stop_words:
             filtered_sentence.append(lemmatizer.lemmatize(w.lower()))
-    return dict(Counter(sorted(filtered_sentence)))
-    #returns a dictionary with word frequency
+    return sorted(filtered_sentence)
+
+def add_to_gc(site, grande_corpus):
+    list1 = [" ".join(filter_page(site))]
+    grande_corpus[site] = list1
+    return grande_corpus
+#grande corpus is a dictionary that contain page links and content of filtered pages like
+#grande_corpus = {"link1": ['content'], "link2": ['content2'],......}
+def create_gc(links):
+    grande_corpus = {}
+    for link in links:
+        grande_corpus = add_to_gc(link, grande_corpus)
+    return grande_corpus
+#A document-term matrix is a mathematical matrix that describes the frequency of terms that occur in a 
+# collection of documents. In a document-term matrix, rows correspond to documents in the collection and columns correspond to terms.
+#  This matrix is a specific instance of a document-feature matrix where "features" may refer to other properties of a document besides terms
+def term_doc_matrix(links):
+    grande_corpus = create_gc(links)
+    df1 = pd.DataFrame(grande_corpus)
+    vectorizer = TfidfVectorizer()
+    doc_vec = vectorizer.fit_transform(df1.iloc[0])
+    df2 = pd.DataFrame(doc_vec.toarray().transpose(),
+                   index=vectorizer.get_feature_names())
+    df2.columns = df1.columns
+    return df2 #returns term doc matrix
+#SHIVAM'S CODE END
 
 
 def iterate_pagerank(corpus, damping_factor):
