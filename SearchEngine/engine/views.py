@@ -27,11 +27,12 @@ SAMPLES = 10000
 # Create your views here.
 # link_site = 'https://xkcd.com/2173/'
 # link_site = 'https://en.wikipedia.org/wiki/Free_content'
-link_site = 'https://en.wikipedia.org'
+# link_site = 'https://en.wikipedia.org'
+link_site = 'http://www.scholarpedia.org/article/Main_Page'
 
 
 # prefix_link = 'https://xkcd.com'
-prefix_link = 'https://en.wikipedia.org'
+prefix_link = 'http://www.scholarpedia.org'
 
 
 def index(request):
@@ -51,6 +52,8 @@ def get_crawled():
         print("total= ", len(links))
         j = 1
         for i in links:
+            if(i in crawled):
+                continue
             print("links crawled ",j)
             j += 1
             temp_links = find_links(i)
@@ -58,9 +61,8 @@ def get_crawled():
         pickle_out = open("crawled.pickle","wb")
         pickle.dump(crawled, pickle_out)
         pickle_out.close()
-        iterate_pagerank(crawled, DAMPING)
+        # iterate_pagerank(crawled, DAMPING)
         return crawled
-
 
 def find_links(site):
     req = requests.get(site)
@@ -75,10 +77,28 @@ def find_links(site):
             continue
     return all_links
 
+# returns set of all the links 
+def all_links():
+    links = set()
+    for i in crawled.keys():
+        links.add(i)
+        for j in crawled[i]:
+            links.add(j)
+    return links
+
+
+# crawled is dictionary with crawled[current_site] = set(links on current_site)
+crawled = get_crawled()
+
+# all the links that are crawled
+allinks = all_links()
+print(len(allinks))
+
 def crawl(request):
-    crawled = get_crawled()
+    # crawled = get_crawled()
     return render(request, 'engine/crawl.html',{
-        "sites": list(crawled.keys())
+        # "sites": list(crawled.keys())
+        "sites": list(allinks)
     })
 #SHIVAM"S CODE
 
@@ -176,7 +196,8 @@ def rev_corpus(corpus):
 
 
 def rank(request):
-    corpus = get_crawled()
+    # corpus = get_crawled()
+    corpus = crawled
     #print(corpus)
     pagerank = iterate_pagerank(corpus, DAMPING)
     #print(pagerank)
