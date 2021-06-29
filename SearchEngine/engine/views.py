@@ -162,6 +162,7 @@ def get_query_links(q, df):
     result_links = []
     for i in range(len(df.columns)):
         '''
+        COSINE SIMILARITY
         The formula calculates the dot product divided by the multiplication of the length on each vector. 
         The value ranges from [1, 0], but in general, the cosine value ranges from [-1, 1]. 
         Because there are no negative values on it, we can ignore the negative value because it never happens.'''
