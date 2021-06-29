@@ -3,11 +3,9 @@ import requests
 from bs4 import BeautifulSoup as bsf
 
 import html2text
-from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk import RegexpTokenizer
-from collections import Counter
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
@@ -135,25 +133,34 @@ grande_corpus = {"link1": ['content'], "link2": ['content2'],......}
 def create_gc(links):
     grande_corpus = {}
     for link in links:
+        print("adding....."+link)
         grande_corpus = add_to_gc(link, grande_corpus)
     return grande_corpus
 
 def create_df1(links):
-    grande_corpus = create_gc(links)
-    df1 = pd.DataFrame(grande_corpus)
-    return df1
+    try:
+        f = open('grande_corpus.csv')
+        return pd.read_csv('grande_corpus.csv', index_col = 'Unnamed: 0')
+    except:
+        grande_corpus = create_gc(links)
+        df1 = pd.DataFrame(grande_corpus)
+        df1.to_csv('grande_corpus.csv')
+        return df1
 
 def term_doc_matrix(df1):
-    doc_vec = vectorizer.fit_transform(df1.iloc[0])
-    df2 = pd.DataFrame(doc_vec.toarray().transpose(),
-                   index=vectorizer.get_feature_names())
-    df2.columns = df1.columns
-    '''
-    The result (TERM DOCUMENT MATIRX) will become a representation KEYWORDS of the documents. 
-    WITH THEIR RESPECTIVE TERM FREQUENCE IN THE DOCUMENT.
-    By using that, we can find the similarity between different documents based on the matrix
-    '''
-    return df2
+    try:
+        f = open('term_dm.csv')
+        #print("file is present")
+        return pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
+    except:
+        #print("file was absent")
+        doc_vec = vectorizer.fit_transform(df1.iloc[0])
+        df2 = pd.DataFrame(doc_vec.toarray().transpose(), index=vectorizer.get_feature_names())
+        df2.columns = df1.columns
+        df2.to_csv('term_dm.csv')
+        print("congrats! matrix created")
+        return df2
+
 
 def get_query_links(q, df):
     q = [q]
@@ -173,9 +180,16 @@ def get_query_links(q, df):
 
 '''very important for creating necessary dataframes
 MODIFYING THIS WILL SCREW UP THE WHOLE PROGRAM'''
-df1 = create_df1(all_links) 
+allinks = list(allinks)
+df1 = create_df1(list(crawled.keys())) 
 df = term_doc_matrix(df1) 
 
+print("size of matrix",end=' ')
+print("{} X {}".format((len(df)), len(df.columns) ))
+
+query = 'people'
+result = get_query_links(query, df)
+print("THE RESULTS FOR QUERY {} ARE \n {} ".format(query,result))
 ''' 
 HOW TO SEARCH QUERY?
 ENTER THE QUERY IN A FORMAT 
