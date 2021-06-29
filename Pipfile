@@ -11,6 +11,8 @@ lxml = "*"
 pickle5 = "*"
 html2text = "*"
 nltk = "*"
+pandas = "*"
+scikit-learn = "*"
 
 [dev-packages]
 
