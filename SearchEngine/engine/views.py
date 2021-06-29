@@ -22,7 +22,7 @@ import math
 
 DAMPING = 0.85
 SAMPLES = 10000
-
+vectorizer = TfidfVectorizer()
 
 # Create your views here.
 # link_site = 'https://xkcd.com/2173/'
@@ -100,9 +100,15 @@ def crawl(request):
         # "sites": list(crawled.keys())
         "sites": list(allinks)
     })
-#SHIVAM"S CODE
+
+#---------------------------SKYHAWK'S CODE--------------------------------------
 
 def filter_page(site):
+    '''
+    Right after we extract the documents, we have to clean it, so our retrieval process becomes much easier. 
+    For each document, we have to remove all unnecessary words, numbers and punctuations, lowercase the word, 
+    and remove the doubled space. AND TOKENISE THE WHOLE THING TO STORE IT IN A LIST
+    '''
     req = requests.get(site)
     h = html2text.HTML2Text()
     h.ignore_links = True
@@ -115,32 +121,70 @@ def filter_page(site):
     for w in words:
         if w not in stop_words:
             filtered_sentence.append(lemmatizer.lemmatize(w.lower()))
-    return sorted(filtered_sentence)
+    return sorted(filtered_sentence) #RETURN FILTERED WORDS IN A LIST FORM
 
 def add_to_gc(site, grande_corpus):
     list1 = [" ".join(filter_page(site))]
     grande_corpus[site] = list1
     return grande_corpus
-#grande corpus is a dictionary that contain page links and content of filtered pages like
-#grande_corpus = {"link1": ['content'], "link2": ['content2'],......}
+'''
+grande corpus is a dictionary that contain page links and content of filtered pages like
+grande_corpus = {"link1": ['content'], "link2": ['content2'],......}
+
+'''
 def create_gc(links):
     grande_corpus = {}
     for link in links:
         grande_corpus = add_to_gc(link, grande_corpus)
     return grande_corpus
-#A document-term matrix is a mathematical matrix that describes the frequency of terms that occur in a 
-# collection of documents. In a document-term matrix, rows correspond to documents in the collection and columns correspond to terms.
-#  This matrix is a specific instance of a document-feature matrix where "features" may refer to other properties of a document besides terms
-def term_doc_matrix(links):
+
+def create_df1(links):
     grande_corpus = create_gc(links)
     df1 = pd.DataFrame(grande_corpus)
-    vectorizer = TfidfVectorizer()
+    return df1
+
+def term_doc_matrix(df1):
     doc_vec = vectorizer.fit_transform(df1.iloc[0])
     df2 = pd.DataFrame(doc_vec.toarray().transpose(),
                    index=vectorizer.get_feature_names())
     df2.columns = df1.columns
-    return df2 #returns term doc matrix
-#SHIVAM'S CODE END
+    '''
+    The result (TERM DOCUMENT MATIRX) will become a representation KEYWORDS of the documents. 
+    WITH THEIR RESPECTIVE TERM FREQUENCE IN THE DOCUMENT.
+    By using that, we can find the similarity between different documents based on the matrix
+    '''
+    return df2
+
+def get_query_links(q, df):
+    q = [q]
+    q_vec = vectorizer.fit_transform(df1.iloc[0])
+    q_vec = vectorizer.transform(q).toarray().reshape(df.shape[0],)
+    result_links = []
+    for i in range(len(df.columns)):
+        '''
+        COSINE SIMILARITY
+        The formula calculates the dot product divided by the multiplication of the length on each vector. 
+        The value ranges from [1, 0], but in general, the cosine value ranges from [-1, 1]. 
+        Because there are no negative values on it, we can ignore the negative value because it never happens.'''
+        a = np.dot(df.iloc[:, i].values, q_vec) / np.linalg.norm(df.iloc[:, i]) * np.linalg.norm(q_vec)
+        if a != 0.0:
+            result_links.append(df.columns[i])
+    return result_links
+
+'''very important for creating necessary dataframes
+MODIFYING THIS WILL SCREW UP THE WHOLE PROGRAM'''
+df1 = create_df1(all_links) 
+df = term_doc_matrix(df1) 
+
+''' 
+HOW TO SEARCH QUERY?
+ENTER THE QUERY IN A FORMAT 
+query = '<query>'
+IN get_query_links function like
+result = get_query_links(query, df)
+HERE 'df' IS OR RESULTING TERM DOCUMENT MATRIX FROM THE FUNCTION term_doc_matrix(df1)
+'''
+#-------------------------------SHYHAWK'S CODE END-----------------------------------------------
 
 
 def iterate_pagerank(corpus, damping_factor):
