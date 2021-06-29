@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 import requests
 from bs4 import BeautifulSoup as bsf
 
@@ -162,7 +163,7 @@ def term_doc_matrix(df1):
         return df2
 
 
-def get_query_links(q, df):
+def get_query_links(q, df, df1):
     q = [q]
     q_vec = vectorizer.fit_transform(df1.iloc[0])
     q_vec = vectorizer.transform(q).toarray().reshape(df.shape[0],)
@@ -180,16 +181,17 @@ def get_query_links(q, df):
 
 '''very important for creating necessary dataframes
 MODIFYING THIS WILL SCREW UP THE WHOLE PROGRAM'''
-allinks = list(allinks)
-df1 = create_df1(list(crawled.keys())) 
-df = term_doc_matrix(df1) 
+# allinks = list(allinks)
+# # df1 = create_df1(list(crawled.keys()))
+# df1 = create_df1(['http://127.0.0.1:8000/sample/one'])      #for test
+# df = term_doc_matrix(df1) 
 
-print("size of matrix",end=' ')
-print("{} X {}".format((len(df)), len(df.columns) ))
+# print("size of matrix",end=' ')
+# print("{} X {}".format((len(df)), len(df.columns) ))
 
-query = 'people'
-result = get_query_links(query, df)
-print("THE RESULTS FOR QUERY {} ARE \n {} ".format(query,result))
+# query = 'people'
+# result = get_query_links(query, df)
+# print("THE RESULTS FOR QUERY {} ARE \n {} ".format(query,result))
 ''' 
 HOW TO SEARCH QUERY?
 ENTER THE QUERY IN A FORMAT 
@@ -264,4 +266,20 @@ def rank(request):
     })    
 
 
-    
+def indexer():
+    all_links = list(allinks)
+    # df1 = create_df1(list(crawled.keys()))
+    df1 = create_df1(['http://127.0.0.1:8000/sample/one'])      #for test
+    df = term_doc_matrix(df1) 
+
+    print("size of matrix",end=' ')
+    print("{} X {}".format((len(df)), len(df.columns) ))
+
+    query = 'programming'
+    result = get_query_links(query, df, df1)
+    print("THE RESULTS FOR QUERY {} ARE \n {} ".format(query,result))
+    return(df)
+
+def index_call(request):
+    indexer()
+    return HttpResponse("RanFine")
