@@ -159,7 +159,7 @@ def filter_page(site):
     lemmatizer  = WordNetLemmatizer()
     stop_words = set(stopwords.words("english"))
     txt = h.handle(req.text)
-    tokenizer = RegexpTokenizer(r"[a-zA-Z]+|[1-2][7-9][0-9][0-9]") 
+    tokenizer = RegexpTokenizer(r"[a-zA-Z]{3,}|[1-2][7-9][0-9][0-9]") 
     words = tokenizer.tokenize(txt)
     filtered_sentence = []
     for w in words:
