@@ -19,8 +19,11 @@ import re
 import sys
 import math
 
+#imports/global variables by Harshita
 DAMPING = 0.85
 SAMPLES = 10000
+from .models import Rank
+#imports end
 vectorizer = TfidfVectorizer()
 
 # Create your views here.
@@ -251,6 +254,7 @@ def iterate_pagerank(corpus, damping_factor):
     PageRank values until convergence.
     Returns a dictionary where keys are page names, and values are
     their estimated PageRank value (a value between 0 and 1).
+    EDIT: Now this function will also work to store the pagerank values in DataBase
     """
     for page in corpus:
         if len(corpus[page]) == 0:
@@ -280,7 +284,10 @@ def iterate_pagerank(corpus, damping_factor):
             if abs(new_rank - pagerank_dict[key]) <= 0.001:
                 counter +=1 
             else:
-                pagerank_dict[key] = new_rank                
+                pagerank_dict[key] = new_rank 
+    print("PAGERANK DICTIONARY IS")
+    print(pagerank_dict)            
+                
     return pagerank_dict       
 
 def rev_corpus(corpus):
@@ -306,10 +313,12 @@ def crawl(request):
 
 def rank(request):
     corpus = get_crawled()
-    # corpus = crawled
-    #print(corpus)
     pagerank = iterate_pagerank(corpus, DAMPING)
-    #print(pagerank)
+    for value in pagerank:
+        #print(value)
+        if not Rank.objects.filter(page_link=value).exists():
+            entry = Rank(page_link = value,pagerank = pagerank[value])  
+            entry.save() 
     return render(request,'engine/rank.html',{
         "pagerank":pagerank
     })    
@@ -326,7 +335,7 @@ def indexer():
     print("size of matrix",end=' ')
     print("{} X {}".format((len(df)), len(df.columns) ))
 
-    query = 'programming'
+    query = "data"
     result = get_query_links(query, df, df1)
     print("THE RESULTS FOR QUERY {} ARE \n {} ".format(query,result))
     return(df)
