@@ -355,39 +355,3 @@ def index_call(request):
     indexer()
     return HttpResponse("RanFine")
 
-<<<<<<< HEAD
-indexer()
-=======
-
-
-@csrf_exempt
-def query(request):
-    print("QUERY FUNCTION REACHED")
-    if request.method != "POST":
-        return JsonResponse({"error": "POST request required."}, status=400)
-    if request.method == "POST":
-        data = json.loads(request.body.decode("utf-8"))
-        #print(data)
-        query = data.get("query")
-        crawled = get_crawled()
-        allinks = list(all_links(crawled))
-        df1 = create_df1(allinks)
-        temp = []
-        df = pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
-        #df = pd.read_csv("term_dm.csv")
-        #df.to_csv("term_dm.csv", index=False)
-        #print(df)
-        
-        result = get_query_links(query,df, df1)
-
-
-        
-        
-        
-        #df = term_doc_matrix(df1) 
-        #result = get_query_links(query, df, df1)
-        print("THE RESULTS FOR QUERY {} ARE \n {} ".format(query,result))
-        
-        return JsonResponse({"message": "Query request sent successfully."}, status=201)
-        
->>>>>>> 0121ffd28ee98bd32dd5ebc94e8c1f2bc6fd9a83
