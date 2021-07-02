@@ -33,6 +33,6 @@ starts the python virtual environment
 
 ### go to  http://127.0.0.1:8000/engine/index to view the index page
 
-
-
 ### go to http://127.0.0.1:8000/engine/indexer for checking if indexing is working fine
+
+### New feature- Search something in search bar, check terminal to see resultant pages related to that search
