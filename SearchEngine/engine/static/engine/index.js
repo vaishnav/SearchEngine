@@ -3,7 +3,22 @@ function message() {
 }
 
 document.addEventListener('DOMContentLoaded', function(){
-    console.log("hello")
-    document.querySelector('form').onsubmit = message;
+    var form = document.querySelector('form');
+    console.log(form);
+    document.querySelector('form').onsubmit = function(){
+        const query = form.elements[0].value;
+        if (query== "") {
+            alert("Enter a valid string");
+            return false;
+        };
+        console.log(query)
+            fetch('index/query',{
+                method:'POST',
+                body: JSON.stringify({
+                    query:query,
+                })
+            })
+            //return false;
+    }
 });
 
