@@ -211,6 +211,11 @@ def term_doc_matrix(df1):
         print("congrats! matrix created")
         return df2
 
+    
+def rumi(list):
+    y = len([x for x in list if x>0])
+    return y
+
 
 def get_query_links(q, df, df1):
     q = [q]
@@ -225,7 +230,10 @@ def get_query_links(q, df, df1):
         Because there are no negative values on it, we can ignore the negative value because it never happens.'''
         a = np.dot(df.iloc[:, i].values, q_vec) / np.linalg.norm(df.iloc[:, i]) * np.linalg.norm(q_vec)
         if a != 0.0:
-            result_links.append(df.columns[i])
+            z = rumi(list(df.iloc[:, i].values*q_vec))
+            result_links.append([df.columns[i],z,a])
+    result_links = sorted(result_links, key = lambda x: (x[1], x[2]),reverse = True)
+    result_links = [x[0] for x in result_links]
     return result_links
 
 '''very important for creating necessary dataframes
@@ -346,8 +354,6 @@ def indexer():
 def index_call(request):
     indexer()
     return HttpResponse("RanFine")
-
-
 
 @csrf_exempt
 def query(request):
