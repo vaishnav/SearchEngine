@@ -7,7 +7,7 @@ import html2text
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk import RegexpTokenizer
-
+from spellchecker import SpellChecker
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 import numpy as np
@@ -29,7 +29,7 @@ import json
 import csv
 #imports end
 vectorizer = TfidfVectorizer()
-
+spell = SpellChecker()
 # Create your views here.
 # link_site = 'https://xkcd.com/2173/'
 # link_site = 'https://en.wikipedia.org/wiki/Free_content'
@@ -152,11 +152,6 @@ def all_links(crawled):
 #---------------------------SKYHAWK'S CODE--------------------------------------
 
 def filter_page(site):
-    '''
-    Right after we extract the documents, we have to clean it, so our retrieval process becomes much easier. 
-    For each document, we have to remove all unnecessary words, numbers and punctuations, lowercase the word, 
-    and remove the doubled space. AND TOKENISE THE WHOLE THING TO STORE IT IN A LIST
-    '''
     req = requests.get(site)
     h = html2text.HTML2Text()
     h.ignore_links = True
@@ -225,9 +220,7 @@ def get_query_links(q, df, df1):
     for i in range(len(df.columns)):
         '''
         COSINE SIMILARITY
-        The formula calculates the dot product divided by the multiplication of the length on each vector. 
-        The value ranges from [1, 0], but in general, the cosine value ranges from [-1, 1]. 
-        Because there are no negative values on it, we can ignore the negative value because it never happens.'''
+        '''
         a = np.dot(df.iloc[:, i].values, q_vec) / np.linalg.norm(df.iloc[:, i]) * np.linalg.norm(q_vec)
         if a != 0.0:
             z = rumi(list(df.iloc[:, i].values*q_vec))
@@ -236,8 +229,22 @@ def get_query_links(q, df, df1):
     result_links = [x[0] for x in result_links]
     return result_links
 
-'''very important for creating necessary dataframes
-MODIFYING THIS WILL SCREW UP THE WHOLE PROGRAM'''
+'''Check Spelling'''
+def checkSpell(query):
+    query = query.split()
+    if(bool(spell.unknown(query))):
+        cort = []
+        for word in query:
+            if(spell.unknown(word)):
+                word = spell.correction(word)
+            cort.append(word)
+        cort = " ".join(cort)
+        print(f"did you mean {cort}")
+        return(cort)
+    else:
+        return
+
+'''MODIFYING THIS WILL SCREW UP THE WHOLE PROGRAM'''
 # allinks = list(allinks)
 # # df1 = create_df1(list(crawled.keys()))
 # df1 = create_df1(['http://127.0.0.1:8000/sample/one'])      #for test
@@ -372,7 +379,7 @@ def query(request):
         #df = pd.read_csv("term_dm.csv")
         #df.to_csv("term_dm.csv", index=False)
         #print(df)
-        
+        #correct_query = checkSpell(query)
         result = get_query_links(query,df, df1)
 
 
