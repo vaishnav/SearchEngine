@@ -3,20 +3,50 @@
 
 
 {% block body %}
-    
-   
-    <strong> <span class="search-logo"><span class="search-E">E</span><span class="search-x">x</span><span class="search-p">p</span><span class="search-l">l</span><span class="search-o">o</span><span class="search-r">r</span><span class="search-e">e</span></span></strong>
-    <img style="position: relative; left: 320px; top:220px;" src="https://img.icons8.com/doodle/100/000000/steam-engine.png"/>
-        <div>
-            <form>
-                <input style="width:fit-content; position:relative;left:700px;top:200px" class="form-control form-control-lg" type="text" placeholder="Search the Web">
-                <button class="btn btn-secondary" style="position: relative; left: 700px; top:197px;height: 50px;font-family:'Courier New', monospace;" type="submit"><strong> Search</strong>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                      </svg>
-                </button>
+<!-- logo and searh form starts here -->
+<div class="row">
+    <ul class="search_main">
+        <li>
+            <img src="{% static 'engine/images/logo_trans.png' %}" alt="" class="">
+        </li>
+        <li>
+            <p class="">Explore Search Engine</p>
+        </li>
+        <li>
+            <form action="">
+                <div class="boxContainer">
+                    <table class="elementsContainer">
+                        <tr>
+                            <td>
+                                <input type="text" placeholder="Search The Web" class="search">
+                            </td>
+                            <td>
+                                <button type="submit"><i class="fas fa-search"></i></button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </form>
-        </div>
+        </li>
+    </ul>
+</div>
+<!-- logo and search end -->
+
+<!-- middle part start here -->
+<div class="row middle">
+    <p class="display-4 fst-italic">
+        A complete implementation of a modern search engine
+    </p>
+    <p class="display-6">
+        A modern search engine is the cogulation of Indexing, Ranking and Crawling. We've implemented each part using 
+        modern methods and algorithm with Django serving as backend. Scroll down to check how each part is implemented. 
+    </p>
+</div>
+<!-- middle part ends here -->
+
+
+
+
 
 {% endblock %}
 
