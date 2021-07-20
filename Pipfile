@@ -13,6 +13,7 @@ html2text = "*"
 nltk = "*"
 pandas = "*"
 scikit-learn = "*"
+pyspellchecker = "*"
 
 [dev-packages]
 
