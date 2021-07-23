@@ -379,8 +379,8 @@ def query(request):
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
         #print(data)
-        #query = data.get("query")
-        query = "Programming"
+        query = data.get("query")
+        #query = "Programming"
         crawled = get_crawled()
         allinks = list(all_links(crawled))
         df1 = create_df1(allinks)
@@ -397,6 +397,8 @@ def q(request):
     links = Link.objects.none()
     if request.method == "POST":
         query = request.POST["search"]
+        if query == "":
+            return render(request, "engine/index.html")
         #query ="PROGRAMMING"
         crawled = get_crawled()
         allinks = list(all_links(crawled))
@@ -404,15 +406,15 @@ def q(request):
         temp = []
         df = pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
         results = get_query_links(query,df, df1)
-        print(results)
+        #print(results)
         for result in results:
-            print("c")
-            print(result)
+            #print("c")
+            #print(result)
             l = Link.objects.filter(link=result)
-            print(l)
+            #print(l)
             #print(l.link)
             links = links | l    
-        print(links)    
+        #print(links)    
         return render(request, "engine/serp.html",{
             "search_results":links
         })
