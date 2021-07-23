@@ -6,10 +6,10 @@
 <div class = "Har">
    
    <ul>
-      {% for link in search_results %}
+      {% for Link in search_results %}
       <div class="border  p-4">
          
-            <a href={{link}}> {{link}}</a>
+            <a href={{Link.link}}> {{Link.title}}</a>
       
       </div>
       {% endfor %}

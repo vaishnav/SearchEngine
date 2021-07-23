@@ -22,7 +22,9 @@ import math
 #imports/global variables by Harshita
 DAMPING = 0.85
 SAMPLES = 10000
-from .models import Rank
+import urllib
+#from urllib import request
+from .models import Rank, Link
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
@@ -335,8 +337,15 @@ def rank(request):
     pagerank = iterate_pagerank(corpus, DAMPING)
     for value in pagerank:
         #print(value)
-        if not Rank.objects.filter(page_link=value).exists():
-            entry = Rank(page_link = value,pagerank = pagerank[value])  
+        if not Link.objects.filter(link=value).exists():
+            html = urllib.request.urlopen(value).read().decode('utf8')
+            html[:60]
+            soup = bsf(html, 'html.parser')
+            title = soup.find('title')
+            print(title.string)
+            link_obj = Link(link= value,title=title.string)
+            link_obj.save()
+            entry = Rank(page_link = link_obj,pagerank = pagerank[value])  
             entry.save() 
     return render(request,'engine/rank.html',{
         "pagerank":pagerank
@@ -385,6 +394,7 @@ def query(request):
 @csrf_exempt       
 def q(request):
     print("q function reached")
+    links = Link.objects.none()
     if request.method == "POST":
         query = request.POST["search"]
         #query ="PROGRAMMING"
@@ -393,9 +403,17 @@ def q(request):
         df1 = create_df1(allinks)
         temp = []
         df = pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
-        result = get_query_links(query,df, df1)
-        print(result)
+        results = get_query_links(query,df, df1)
+        print(results)
+        for result in results:
+            print("c")
+            print(result)
+            l = Link.objects.filter(link=result)
+            print(l)
+            #print(l.link)
+            links = links | l    
+        print(links)    
         return render(request, "engine/serp.html",{
-            "search_results":result
+            "search_results":links
         })
     
