@@ -386,8 +386,8 @@ def query(request):
 def q(request):
     print("q function reached")
     if request.method == "POST":
-        #query = request.POST["search"].value
-        query ="PROGRAMMING"
+        query = request.POST["search"]
+        #query ="PROGRAMMING"
         crawled = get_crawled()
         allinks = list(all_links(crawled))
         df1 = create_df1(allinks)
