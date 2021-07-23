@@ -145,3 +145,7 @@ body::-webkit-scrollbar {
     color: white;
     background-color: var(--bg-dark);
 }
+
+.Har {
+    color:white;
+}

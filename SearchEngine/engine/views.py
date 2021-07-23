@@ -370,25 +370,32 @@ def query(request):
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
         #print(data)
-        query = data.get("query")
+        #query = data.get("query")
+        query = "Programming"
         crawled = get_crawled()
         allinks = list(all_links(crawled))
         df1 = create_df1(allinks)
         temp = []
         df = pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
-        #df = pd.read_csv("term_dm.csv")
-        #df.to_csv("term_dm.csv", index=False)
-        #print(df)
-        #correct_query = checkSpell(query)
         result = get_query_links(query,df, df1)
-
-
-        
-        
-        
-        #df = term_doc_matrix(df1) 
-        #result = get_query_links(query, df, df1)
         print("THE RESULTS FOR QUERY {} ARE \n {} ".format(query,result))
         
         return JsonResponse({"message": "Query request sent successfully."}, status=201)
-        
+
+@csrf_exempt       
+def q(request):
+    print("q function reached")
+    if request.method == "POST":
+        #query = request.POST["search"].value
+        query ="PROGRAMMING"
+        crawled = get_crawled()
+        allinks = list(all_links(crawled))
+        df1 = create_df1(allinks)
+        temp = []
+        df = pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
+        result = get_query_links(query,df, df1)
+        print(result)
+        return render(request, "engine/serp.html",{
+            "search_results":result
+        })
+    

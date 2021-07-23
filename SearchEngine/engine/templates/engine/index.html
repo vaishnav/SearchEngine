@@ -13,12 +13,13 @@
             <p class="">Explore Search Engine</p>
         </li>
         <li>
-            <form action="">
+            <form action="{% url 'engine:q'  %}" method="post">
+                {% csrf_token %}
                 <div class="boxContainer">
                     <table class="elementsContainer">
                         <tr>
                             <td>
-                                <input type="text" placeholder="Search The Web" class="search">
+                                <input type="text" placeholder="Search The Web" class="search" name ="search">
                             </td>
                             <td>
                                 <button type="submit"><i class="fas fa-search"></i></button>

@@ -1,0 +1,26 @@
+{% extends "engine/layout.html" %}
+{% load static %}
+
+
+{% block body %}
+<div class = "Har">
+   
+   <ul>
+      {% for link in search_results %}
+      <div class="border  p-4">
+         
+            <a href={{link}}> {{link}}</a>
+      
+      </div>
+      {% endfor %}
+   </ul>
+     
+  
+</div>
+    
+   
+   
+
+{% endblock %}
+
+
