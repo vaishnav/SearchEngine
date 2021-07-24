@@ -24,7 +24,7 @@ DAMPING = 0.85
 SAMPLES = 10000
 import urllib
 #from urllib import request
-from .models import Rank, Link
+from .models import Rank, Link, Searches
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
@@ -378,18 +378,12 @@ def query(request):
         return JsonResponse({"error": "POST request required."}, status=400)
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
-        #print(data)
-        query = data.get("query")
-        #query = "Programming"
-        crawled = get_crawled()
-        allinks = list(all_links(crawled))
-        df1 = create_df1(allinks)
-        temp = []
-        df = pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
-        result = get_query_links(query,df, df1)
-        print("THE RESULTS FOR QUERY {} ARE \n {} ".format(query,result))
-        
-        return JsonResponse({"message": "Query request sent successfully."}, status=201)
+        text = data.get("text")
+        print(text)
+        Searches_objects = Searches.objects.all()
+        dropdown = Searches_objects.filter(string__startswith=text).values_list('string',flat=True).order_by('-frequency')
+        print(list(dropdown))
+        return JsonResponse({"dropdown": list(dropdown)}, status=201)
 
 @csrf_exempt       
 def q(request):
@@ -399,23 +393,27 @@ def q(request):
         query = request.POST["search"]
         if query == "":
             return render(request, "engine/index.html")
-        #query ="PROGRAMMING"
         crawled = get_crawled()
         allinks = list(all_links(crawled))
         df1 = create_df1(allinks)
         temp = []
         df = pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
         results = get_query_links(query,df, df1)
-        #print(results)
         for result in results:
-            #print("c")
-            #print(result)
             l = Link.objects.filter(link=result)
-            #print(l)
-            #print(l.link)
-            links = links | l    
-        #print(links)    
-        return render(request, "engine/serp.html",{
-            "search_results":links
-        })
+            links = links | l       
+        if len(links) == 0:
+            return render(request,"engine/no.html")
+        else:
+            all_obj = Searches.objects.filter(string = query)
+            if len(all_obj) ==  0:
+                search_obj = Searches(string=query,frequency=1)
+            else:    
+                search_obj = Searches.objects.get(string = query) 
+                search_obj.frequency = search_obj.frequency + 1   
+            search_obj.save()  
+
+            return render(request, "engine/serp.html",{
+                "search_results":links
+            })
     

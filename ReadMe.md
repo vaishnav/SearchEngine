@@ -35,5 +35,8 @@ starts the python virtual environment
 
 ### go to http://127.0.0.1:8000/engine/indexer for checking if indexing is working fine
 
-### New feature- Search something in search bar, check terminal to see resultant pages related to that search
+### Search suggestion feature added(Suggestons are based upon previous global searches and their order is according to the respective frequencies)- How to test it? 
+###----- Search 'program', next time when you search a word that is prefix of 'program', it will be shown in suggestion dropdown
+###----- Search 'programming' next time you will see 'program' and 'programming', 
+###----- Search 'programming' 2-3 times, and you will see next time 'programming' appears on the top while typing p as it's frequency of search is higher
 

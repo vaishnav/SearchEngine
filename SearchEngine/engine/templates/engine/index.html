@@ -12,23 +12,81 @@
         <li>
             <p class="">Explore Search Engine</p>
         </li>
-        <li>
-            <form id ="thisform" action="{% url 'engine:q'  %}" method="post">
-                {% csrf_token %}
-                <div class="boxContainer">
-                    <table class="elementsContainer">
-                        <tr>
-                            <td>
-                                <input id="string" autocomplete = "off" type="text" placeholder="Search The Web" class="search" name ="search">
-                            </td>
-                            <td>
-                                <button type="submit"><i class="fas fa-search"></i></button>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </form>
-        </li>
+                <li>
+                    <form id ="thisform" action="{% url 'engine:q'  %}" method="post">
+                        {% csrf_token %}
+                        <div class="boxContainer">
+                            <table class="elementsContainer">
+                                <tr>
+                                    <td>
+                                        
+                                    
+                                    <div id="string"></div>
+                                    <script type="text/babel">
+                                        function App() {
+
+                                            const [state, setState] = React.useState({
+                                                response: ""
+                                            });
+
+                                            function updateResponse (event) {
+                                                setState({
+                                                ...state,
+                                                response: event.target.value
+                                                });
+                                            var text = event.target.value;
+                                            console.log(text);
+                                            fetch('index/query',{
+                                                method:'POST',
+                                                body: JSON.stringify({
+                                                text:text,
+                                                })
+                                            })
+                                            
+                                            .then(response=>response.text())
+                                            .then(data=>{
+                                                //console.log(data)
+                                                data = JSON.parse(data)
+                                                //console.log(data)
+                                                console.log(data.dropdown)
+                                                if ((event.target.value) != "")
+                                                {
+                                                var options = '';
+
+                                                for (let i = 0; i < (data.dropdown).length; i++) {
+                                                    options += '<option value="' + data.dropdown[i] + '" />';
+                                                    
+                                                    }
+                                                    document.getElementById('dropdown').innerHTML = options;
+                                                }    
+                                            });
+                                            
+                                        }
+                                        return(
+                                            <div>
+                                                <input list="dropdown" onChange={updateResponse} value={state.response} type="search"  id="string" autocomplete = "off"  placeholder="Search The Web" class="search" name ="search"  />  
+                                            
+                                                <datalist id="dropdown">
+                                                   
+                                                </datalist>        
+                                            </div>
+                                            
+                                            
+                                        );
+                                    }
+
+                                    ReactDOM.render(<App />, document.querySelector("#string"));
+                                    </script>
+                                    
+                                    </td>
+                                    <td>
+                                        <button type="submit"><i class="fas fa-search"></i></button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
+                </li> 
     </ul>
 </div>
 <!-- logo and search end -->
