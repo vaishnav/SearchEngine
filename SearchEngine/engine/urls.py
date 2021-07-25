@@ -10,4 +10,5 @@ urlpatterns = [
     path('indexer',views.index_call,name="indexer"),
     path("index/query",views.query,name="query"),
     path("q",views.q, name="q"),
+    path("qc/<str:correction>",views.qc, name="qc"),
 ]

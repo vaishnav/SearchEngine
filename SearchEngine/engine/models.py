@@ -18,3 +18,9 @@ class Searches(models.Model):
 
     def __str__(self):
         return f"{self.string} {self.frequency}"
+
+class Words(models.Model):
+    word = models.CharField(max_length = 1000)
+
+    def __str__(self):
+        return f"{self.word}"        

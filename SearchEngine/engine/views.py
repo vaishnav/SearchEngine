@@ -24,12 +24,14 @@ DAMPING = 0.85
 SAMPLES = 10000
 import urllib
 #from urllib import request
-from .models import Rank, Link, Searches
+from .models import Rank, Link, Searches, Words
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
 import csv
+import difflib
 #imports end
+
 vectorizer = TfidfVectorizer()
 spell = SpellChecker()
 # Create your views here.
@@ -47,7 +49,9 @@ prefix_link = 'http://127.0.0.1:8000'
 
 
 def index(request):
-    return render(request,"engine/index.html")
+    return render(request,"engine/index.html",{
+        "correction":""
+    })
 
 
 # def get_crawled():
@@ -165,6 +169,10 @@ def filter_page(site):
     filtered_sentence = []
     for w in words:
         if w not in stop_words:
+            if Words.objects.filter(word=w).exists():
+            #if w not in filtered_sentence:
+                word_obj = Words(word = w)
+                word_obj.save()
             filtered_sentence.append(lemmatizer.lemmatize(w.lower()))
     return sorted(filtered_sentence) #RETURN FILTERED WORDS IN A LIST FORM
 
@@ -355,11 +363,12 @@ def rank(request):
 def indexer():
     crawled = get_crawled()
     allinks = list(all_links(crawled))
-    # df1 = create_df1(list(crawled.keys()))
     df1 = create_df1(allinks)
+    #print("df1")
+    #print(df1)
     # df1 = create_df1(['http://127.0.0.1:8000/sample/one'])      #for test
     df = term_doc_matrix(df1) 
-
+    print(df)
     print("size of matrix",end=' ')
     print("{} X {}".format((len(df)), len(df.columns) ))
 
@@ -403,7 +412,15 @@ def q(request):
             l = Link.objects.filter(link=result)
             links = links | l       
         if len(links) == 0:
-            return render(request,"engine/no.html")
+            words_objects = Words.objects.all().values_list('word',flat=True)
+            correction = difflib.get_close_matches(query, list(words_objects))
+            if len(correction) != 0:
+                return render(request,"engine/index.html",{
+                "correction": correction[0]
+            })
+            else:
+                return render(request, "engine/no.html")
+            
         else:
             all_obj = Searches.objects.filter(string = query)
             if len(all_obj) ==  0:
@@ -416,4 +433,27 @@ def q(request):
             return render(request, "engine/serp.html",{
                 "search_results":links
             })
+    
+def qc(request,correction):
+    links = Link.objects.none()
+    crawled = get_crawled()
+    allinks = list(all_links(crawled))
+    df1 = create_df1(allinks)
+    temp = []
+    df = pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
+    results = get_query_links(correction,df, df1)
+    for result in results:
+        l = Link.objects.filter(link=result)
+        links = links | l
+    all_obj = Searches.objects.filter(string = correction)
+    if len(all_obj) ==  0:
+        search_obj = Searches(string=correction,frequency=1)
+    else:    
+        search_obj = Searches.objects.get(string = correction)
+        search_obj.frequency = search_obj.frequency + 1   
+    search_obj.save()
+
+    return render(request, "engine/serp.html",{
+        "search_results":links
+    })    
     
