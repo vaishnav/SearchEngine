@@ -48,6 +48,7 @@ starts the python virtual environment
 
 
 ### User friendly page for no search results
+### 'Did you mean' functionality
 
 
 
