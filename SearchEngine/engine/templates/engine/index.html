@@ -12,18 +12,18 @@
         <li>
             <p class="">Explore Search Engine</p>
         </li>
-                <li>
-                    <form id ="thisform" action="{% url 'engine:q'  %}" method="post">
-                        {% csrf_token %}
-                        <div class="boxContainer">
-                            <table class="elementsContainer">
-                                <tr>
-                                    <td>
-                                        
-                                    
-                                    <div id="string"></div>
-                                    <script type="text/babel">
-                                        function App() {
+        <li>
+            <form id="thisform" action="{% url 'engine:q'  %}" method="post">
+                {% csrf_token %}
+                <div class="boxContainer">
+                    <table class="elementsContainer">
+                        <tr>
+                            <td>
+
+
+                                <div id="string"></div>
+                                <script type="text/babel">
+                                    function App() {
 
                                             const [state, setState] = React.useState({
                                                 response: ""
@@ -77,34 +77,33 @@
 
                                     ReactDOM.render(<App />, document.querySelector("#string"));
                                     </script>
-                                    
-                                    </td>
-                                    <td>
-                                        <button type="submit"><i class="fas fa-search"></i></button>
-                                    </td> 
 
-                                </tr>
-                            </table>
-                        </div>
-                    </form>
-                </li>
-            </li>
-            <li class="to_abtus">
-                <p>Want to learn how our Search Engine works ?</p>
-            </li>
-            <li class="to_abtus">
-                <a href="" class="btn">Check About Us</a>
-            </li> 
+                            </td>
+                            <td>
+                                <button type="submit"><i class="fas fa-search"></i></button>
+                            </td>
+
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </li>
+        </li>
+        <li class="to_abtus">
+            <p>Want to learn how our Search Engine works ?</p>
+        </li>
+        <li class="to_abtus">
+            <a href="" class="btn">Check About Us</a>
+        </li>
     </ul>
 </div>
 <div>
     {% if correction != "" %}
-        <h4 style="color: aliceblue; position: relative; left:650px; top:30px;">Did you mean <a href="{% url 'engine:qc' correction %}">{{correction}}</a>? </h4>
+    <h4 style="color: aliceblue; position: relative; left:650px; top:30px;">Did you mean <a
+            href="{% url 'engine:qc' correction %}">{{correction}}</a>? </h4>
     {% endif %}
 </div>
 
 <!-- logo and search end -->
 
 {% endblock %}
-
-

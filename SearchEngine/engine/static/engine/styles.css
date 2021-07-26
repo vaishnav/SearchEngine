@@ -6,13 +6,13 @@
     --bg-light: #bc6ff1;
 }
 
-html,body
-{
+html,
+body {
     width: 100%;
     height: 100%;
     margin: 0px;
     padding: 0px;
-    overflow-x: hidden; 
+    overflow-x: hidden;
 
     /* background-color: #333333; */
     background-color: var(--bg-primary);
@@ -20,15 +20,15 @@ html,body
 
 body::-webkit-scrollbar {
     width: 0.5rem;
-  }
-  
-  body::-webkit-scrollbar-track {
+}
+
+body::-webkit-scrollbar-track {
     background: var(--bg-primary);
-  }
-  
-  body::-webkit-scrollbar-thumb {
+}
+
+body::-webkit-scrollbar-thumb {
     background: #6e6e6e;
-  }
+}
 
 
 
@@ -97,7 +97,7 @@ body::-webkit-scrollbar {
 }
 
 .elementsContainer i {
-    color: #919191 ;
+    color: #919191;
 }
 
 .elementsContainer i:hover {
@@ -114,23 +114,24 @@ body::-webkit-scrollbar {
     cursor: pointer;
 }
 
-.to_abtus > p {
+.to_abtus>p {
     margin-top: 50px;
     font-family: 'Anton', sans-serif;
     font-size: 30px;
 }
 
-.to_abtus > a {
+.to_abtus>a {
     margin-top: -5px;
     background-color: var(--bg-secondary);
     font-weight: bold;
     color: #e3e3e3;
 }
 
-.to_abtus > a:hover {
+.to_abtus>a:hover {
     color: white;
     cursor: pointer;
 }
+
 /* search box part ends here */
 
 
@@ -146,11 +147,11 @@ body::-webkit-scrollbar {
     color: white;
 }
 
-.middle > .display-4 {
+.middle>.display-4 {
     font-family: 'STIX Two Math', serif;
 }
 
-.middle > .display-6 {
+.middle>.display-6 {
     font-size: 1.5em;
 }
 
@@ -162,6 +163,3 @@ body::-webkit-scrollbar {
     color: white;
     background-color: var(--bg-dark);
 }
-
-
-
