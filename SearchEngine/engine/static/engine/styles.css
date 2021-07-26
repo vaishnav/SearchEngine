@@ -114,6 +114,23 @@ body::-webkit-scrollbar {
     cursor: pointer;
 }
 
+.to_abtus > p {
+    margin-top: 50px;
+    font-family: 'Anton', sans-serif;
+    font-size: 30px;
+}
+
+.to_abtus > a {
+    margin-top: -5px;
+    background-color: var(--bg-secondary);
+    font-weight: bold;
+    color: #e3e3e3;
+}
+
+.to_abtus > a:hover {
+    color: white;
+    cursor: pointer;
+}
 /* search box part ends here */
 
 
@@ -146,7 +163,5 @@ body::-webkit-scrollbar {
     background-color: var(--bg-dark);
 }
 
-.Har {
-    color:white;
-}
+
 
