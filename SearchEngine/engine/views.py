@@ -24,7 +24,7 @@ DAMPING = 0.85
 SAMPLES = 10000
 import urllib
 #from urllib import request
-from .models import Rank, Link, Searches, Words
+from .models import Link, Searches, Words
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
@@ -351,10 +351,8 @@ def rank(request):
             soup = bsf(html, 'html.parser')
             title = soup.find('title')
             print(title.string)
-            link_obj = Link(link= value,title=title.string)
+            link_obj = Link(link= value,title=title.string,pagerank=pagerank[value])
             link_obj.save()
-            entry = Rank(page_link = link_obj,pagerank = pagerank[value])  
-            entry.save() 
     return render(request,'engine/rank.html',{
         "pagerank":pagerank
     })    
