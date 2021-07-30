@@ -7,7 +7,7 @@ class Link(models.Model):
     pagerank = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
-        return f"{self.title}"
+        return f"{self.title}{self.pagerank}"
 
 
 class Searches(models.Model):

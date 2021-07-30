@@ -20,6 +20,8 @@ import sys
 import math
 
 #imports/global variables by Harshita
+A = 2
+B = 1
 DAMPING = 0.85
 SAMPLES = 10000
 import urllib
@@ -406,9 +408,20 @@ def q(request):
         temp = []
         df = pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
         results = get_query_links(query,df, df1)
+        total_rank = {}
+        count = len(results)
         for result in results:
-            l = Link.objects.filter(link=result)
-            links = links | l       
+            pagerank = Link.objects.get(link=result).pagerank
+            total_rank[result] = A*pagerank + int(0.5*count)
+            count = count - 1
+        print(total_rank) 
+        total_rank = sorted(total_rank.items(), key=lambda x: x[1], reverse=True)
+        
+        #print(sorted(total_rank))  
+        for val in total_rank:    
+            l = Link.objects.filter(link=val[0])
+            links = links | l   
+        print(links)        
         if len(links) == 0:
             words_objects = Words.objects.all().values_list('word',flat=True)
             correction = difflib.get_close_matches(query, list(words_objects))

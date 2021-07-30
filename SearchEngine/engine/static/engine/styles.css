@@ -163,3 +163,7 @@ body::-webkit-scrollbar-thumb {
     color: white;
     background-color: var(--bg-dark);
 }
+
+.Har{
+    color:#e3e3e3;
+}
