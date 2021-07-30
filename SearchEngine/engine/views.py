@@ -21,7 +21,7 @@ import math
 
 #imports/global variables by Harshita
 A = 2
-B = 1
+B = 0.5
 DAMPING = 0.85
 SAMPLES = 10000
 import urllib
@@ -412,7 +412,7 @@ def q(request):
         count = len(results)
         for result in results:
             pagerank = Link.objects.get(link=result).pagerank
-            total_rank[result] = A*pagerank + int(0.5*count)
+            total_rank[result] = A*pagerank + int(B*count)
             count = count - 1
         print(total_rank) 
         total_rank = sorted(total_rank.items(), key=lambda x: x[1], reverse=True)
