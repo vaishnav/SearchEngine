@@ -5,21 +5,22 @@
 {% block body %}
 
 <div class="serp_nav">
-   <li>
-      <img src="{% static 'engine/images/logo_trans.png' %}" alt="" class="">
-  </li>
-  <li>
-      <form id="thisform" action="{% url 'engine:q'  %}" method="post">
-          {% csrf_token %}
-          <div class="serp_boxContainer">
-              <table class="serp_elementsContainer">
+   <ul class="serp_main">
+      <li>
+         <a href="{% url 'engine:index' %}"><img src="{% static 'engine/images/logo_trans.png' %}" alt="" class=""></a>
+      </li>
+      <li>
+         <form id="thisform" action="{% url 'engine:q'  %}" method="post">
+            {% csrf_token %}
+            <div class="serp_boxContainer">
+               <table class="serp_elementsContainer">
                   <tr>
-                      <td>
+                     <td>
 
 
-                          <div id="string"></div>
-                          <script type="text/babel">
-                              function App() {
+                        <div id="string"></div>
+                        <script type="text/babel">
+                           function App() {
 
                                       const [state, setState] = React.useState({
                                           response: ""
@@ -74,16 +75,17 @@
                               ReactDOM.render(<App />, document.querySelector("#string"));
                               </script>
 
-                      </td>
-                      <td>
-                          <button type="submit"><i class="fas fa-search"></i></button>
-                      </td>
+                     </td>
+                     <td>
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                     </td>
 
                   </tr>
-              </table>
-          </div>
-      </form>
-  </li>
+               </table>
+            </div>
+         </form>
+      </li>
+   </ul>
 </div>
 
 <div class = "container serp_main">

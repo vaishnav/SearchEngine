@@ -193,21 +193,30 @@ body::-webkit-scrollbar-thumb {
 
 
 /* serp part start here */
-.serp_nav{
+.serp_main {
+    list-style: none;
     display: flex;
+}
+
+.serp_nav{
     margin-bottom: 30px;
+    padding-bottom: 0px;
     background-color: #1a1a1a;
+
 }
 
 .serp_nav img {
     height: 55px;
     margin: 10px;
-    margin-top: 16px;
+    margin-top: 9px;
+    padding-top: 0px;
+    padding-left: 20px;
+    padding-right: 10px;
 }
 
 .serp_boxContainer {
     margin: auto;
-    margin-top: 0px;
+    margin-top: 16px;
     position: relative;
     width: 600px;
     height: 42px;
@@ -251,6 +260,10 @@ body::-webkit-scrollbar-thumb {
 .serp_main a {
     text-decoration: none;
     color: var(--bg-light_white);
+}
+
+.serp_main a:hover {
+    text-decoration: underline;
 }
 
 .serp_res {
