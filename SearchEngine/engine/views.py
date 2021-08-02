@@ -468,3 +468,6 @@ def qc(request,correction):
         "search_results":links
     })    
     
+
+def about_us(request):
+    return render(request, 'engine/about_us.html')
