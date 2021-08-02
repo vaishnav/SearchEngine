@@ -3,13 +3,99 @@
 
 
 {% block body %}
-<div class = "Har">
+
+<div class="serp_nav">
+   <li>
+      <img src="{% static 'engine/images/logo_trans.png' %}" alt="" class="">
+  </li>
+  <li>
+      <form id="thisform" action="{% url 'engine:q'  %}" method="post">
+          {% csrf_token %}
+          <div class="serp_boxContainer">
+              <table class="serp_elementsContainer">
+                  <tr>
+                      <td>
+
+
+                          <div id="string"></div>
+                          <script type="text/babel">
+                              function App() {
+
+                                      const [state, setState] = React.useState({
+                                          response: ""
+                                      });
+
+                                      function updateResponse (event) {
+                                          setState({
+                                          ...state,
+                                          response: event.target.value
+                                          });
+                                      var text = event.target.value;
+                                      console.log(text);
+                                      fetch('index/query',{
+                                          method:'POST',
+                                          body: JSON.stringify({
+                                          text:text,
+                                          })
+                                      })
+                                      
+                                      .then(response=>response.text())
+                                      .then(data=>{
+                                          //console.log(data)
+                                          data = JSON.parse(data)
+                                          //console.log(data)
+                                          console.log(data.dropdown)
+                                          if ((event.target.value) != "")
+                                          {
+                                          var options = '';
+
+                                          for (let i = 0; i < (data.dropdown).length; i++) {
+                                              options += '<option value="' + data.dropdown[i] + '" />';
+                                              
+                                              }
+                                              document.getElementById('dropdown').innerHTML = options;
+                                          }    
+                                      });
+                                      
+                                  }
+                                  return(
+                                      <div>
+                                          <input list="dropdown" onChange={updateResponse} value={state.response} type="search"  id="string" autocomplete = "off"  placeholder="Search The Web" class="search" name ="search"  />  
+                                      
+                                          <datalist id="dropdown">
+                                             
+                                          </datalist>        
+                                      </div>
+                                      
+                                      
+                                  );
+                              }
+
+                              ReactDOM.render(<App />, document.querySelector("#string"));
+                              </script>
+
+                      </td>
+                      <td>
+                          <button type="submit"><i class="fas fa-search"></i></button>
+                      </td>
+
+                  </tr>
+              </table>
+          </div>
+      </form>
+  </li>
+</div>
+
+<div class = "container serp_main">
    
    <ul>
       {% for Link in search_results %}
-      <div class="border  p-4">
+      <div class="serp_res">
          
-            <a href={{Link.link}}> {{Link.title}}</a>
+            <a href={{Link.link}} class="upper"> {{Link.title|title}} | This is a sample page</a>
+            <a href={{Link.link}} class="lower"> {{Link.link}}</a>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor laborum minima maiores fugit dolore delectus doloremque cumque accusantium nobis, aperiam fugiat in voluptates error eligendi earum beatae quaerat doloribus quia!</p>
+
       
       </div>
       {% endfor %}
