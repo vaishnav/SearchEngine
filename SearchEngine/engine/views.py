@@ -171,7 +171,7 @@ def filter_page(site):
     filtered_sentence = []
     for w in words:
         if w not in stop_words:
-            if Words.objects.filter(word=w).exists():
+            if not (Words.objects.filter(word=w).exists()):
             #if w not in filtered_sentence:
                 word_obj = Words(word = w)
                 word_obj.save()
@@ -395,57 +395,58 @@ def query(request):
         return JsonResponse({"dropdown": list(dropdown)}, status=201)
 
 @csrf_exempt       
-def q(request):
+def q(request,query=None):
     print("q function reached")
     links = Link.objects.none()
     if request.method == "POST":
         query = request.POST["search"]
-        if query == "":
-            return render(request, "engine/index.html")
-        crawled = get_crawled()
-        allinks = list(all_links(crawled))
-        df1 = create_df1(allinks)
-        temp = []
-        df = pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
-        results = get_query_links(query,df, df1)
-        total_rank = {}
-        count = len(results)
-        for result in results:
-            pagerank = Link.objects.get(link=result).pagerank
-            total_rank[result] = A*pagerank + int(B*count)
-            count = count - 1
-        print(total_rank) 
-        total_rank = sorted(total_rank.items(), key=lambda x: x[1], reverse=True)
-        
-        #print(sorted(total_rank))  
-        for val in total_rank:    
-            l = Link.objects.filter(link=val[0])
-            links = links | l   
-        print(links)        
-        if len(links) == 0:
-            words_objects = Words.objects.all().values_list('word',flat=True)
-            correction = difflib.get_close_matches(query, list(words_objects))
-            if len(correction) != 0:
-                return render(request,"engine/index.html",{
-                "correction": correction[0]
-            })
-            else:
-                return render(request, "engine/no.html")
-            
-        else:
-            all_obj = Searches.objects.filter(string = query)
-            if len(all_obj) ==  0:
-                search_obj = Searches(string=query,frequency=1)
-            else:    
-                search_obj = Searches.objects.get(string = query) 
-                search_obj.frequency = search_obj.frequency + 1   
-            search_obj.save()  
-
-            return render(request, "engine/serp.html",{
-                "search_results":links
-            })
+    if query == "":
+        return render(request, "engine/index.html")
+    crawled = get_crawled()
+    allinks = list(all_links(crawled))
+    df1 = create_df1(allinks)
+    temp = []
+    df = pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
+    results = get_query_links(query,df, df1)
+    total_rank = {}
+    count = len(results)
+    for result in results:
+        pagerank = Link.objects.get(link=result).pagerank
+        total_rank[result] = A*pagerank + int(B*count)
+        count = count - 1
+    print(total_rank) 
+    total_rank = sorted(total_rank.items(), key=lambda x: x[1], reverse=True)
     
-def qc(request,correction):
+    #print(sorted(total_rank))  
+    for val in total_rank:    
+        l = Link.objects.filter(link=val[0])
+        links = links | l   
+    print(links)        
+    if len(links) == 0:
+        words_objects = Words.objects.all().values_list('word',flat=True)
+        correction = difflib.get_close_matches(query, list(words_objects))
+        if len(correction) != 0:
+            return(qc(request,correction[0],True))
+        #     return render(request,"engine/index.html",{
+        #     "correction": correction[0]
+        # })
+        else:
+            return render(request, "engine/no.html")
+        
+    else:
+        all_obj = Searches.objects.filter(string = query)
+        if len(all_obj) ==  0:
+            search_obj = Searches(string=query,frequency=1)
+        else:    
+            search_obj = Searches.objects.get(string = query) 
+            search_obj.frequency = search_obj.frequency + 1   
+        search_obj.save()  
+
+        return render(request, "engine/serp.html",{
+            "search_results":links , "correction": ""
+        })
+
+def qc(request,correction,ddm = False):
     links = Link.objects.none()
     crawled = get_crawled()
     allinks = list(all_links(crawled))
@@ -464,8 +465,11 @@ def qc(request,correction):
         search_obj.frequency = search_obj.frequency + 1   
     search_obj.save()
 
+    if(not ddm):
+        return(q(request,correction))
+
     return render(request, "engine/serp.html",{
-        "search_results":links
+        "search_results":links , "correction": correction
     })    
     
 
