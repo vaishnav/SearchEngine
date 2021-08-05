@@ -24,8 +24,11 @@ A = 2
 B = 0.5
 DAMPING = 0.85
 SAMPLES = 10000
+import nltk
 import urllib
 #from urllib import request
+from django import template
+register = template.Library()
 from .models import Link, Searches, Words
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -172,7 +175,6 @@ def filter_page(site):
     for w in words:
         if w not in stop_words:
             if not (Words.objects.filter(word=w).exists()):
-            #if w not in filtered_sentence:
                 word_obj = Words(word = w)
                 word_obj.save()
             filtered_sentence.append(lemmatizer.lemmatize(w.lower()))
@@ -207,10 +209,8 @@ def create_df1(links):
 def term_doc_matrix(df1):
     try:
         f = open('term_dm.csv')
-        #print("file is present")
         return pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
     except:
-        #print("file was absent")
         doc_vec = vectorizer.fit_transform(df1.iloc[0])
         df2 = pd.DataFrame(doc_vec.toarray().transpose(), index=vectorizer.get_feature_names())
         df2.columns = df1.columns
@@ -241,7 +241,7 @@ def get_query_links(q, df, df1):
     result_links = [x[0] for x in result_links]
     return result_links
 
-'''Check Spelling'''
+'''Check Spelling
 def checkSpell(query):
     query = query.split()
     if(bool(spell.unknown(query))):
@@ -255,6 +255,7 @@ def checkSpell(query):
         return(cort)
     else:
         return
+'''        
 
 '''MODIFYING THIS WILL SCREW UP THE WHOLE PROGRAM'''
 # allinks = list(allinks)
@@ -290,13 +291,8 @@ def iterate_pagerank(corpus, damping_factor):
     for page in corpus:
         if len(corpus[page]) == 0:
             corpus.pop(page)
-            #corpus[page] = list(corpus[page])
-            #for p in corpus:
-                #corpus[page].append(p)
-         
+
     revcorpus = rev_corpus(corpus)
-    #print("REVERSE")
-    #print(revcorpus)
     pagerank_dict = {}
     no_of_pages = len(revcorpus)
     for key in revcorpus:
@@ -339,14 +335,12 @@ def crawl(request):
     print(crawled)
     return render(request, 'engine/crawl.html',{
         "sites": list(crawled.keys())
-        # "sites": list(allinks)
     })
 
 def rank(request):
     corpus = get_crawled()
     pagerank = iterate_pagerank(corpus, DAMPING)
     for value in pagerank:
-        #print(value)
         if not Link.objects.filter(link=value).exists():
             html = urllib.request.urlopen(value).read().decode('utf8')
             html[:60]
@@ -364,9 +358,6 @@ def indexer():
     crawled = get_crawled()
     allinks = list(all_links(crawled))
     df1 = create_df1(allinks)
-    #print("df1")
-    #print(df1)
-    # df1 = create_df1(['http://127.0.0.1:8000/sample/one'])      #for test
     df = term_doc_matrix(df1) 
     print(df)
     print("size of matrix",end=' ')
@@ -410,14 +401,28 @@ def q(request,query=None):
     results = get_query_links(query,df, df1)
     total_rank = {}
     count = len(results)
+    all_matches = []
     for result in results:
+        html = urllib.request.urlopen(result).read().decode('utf8')
+        html[:60]
+        soup = bsf(html, 'lxml')
+        para = soup.select('p')
+        para = para[0].getText()
+        print(para)
+        sentences = nltk.sent_tokenize(para)
+        matches = [sentence for sentence in sentences if query in sentence]
+        if len(matches) == 0:
+            matches = [sentence for sentence in sentences if query.capitalize() in sentence]
+
+        all_matches.append(matches[0])
+        print(matches[0])
         pagerank = Link.objects.get(link=result).pagerank
         total_rank[result] = A*pagerank + int(B*count)
         count = count - 1
+       
     print(total_rank) 
     total_rank = sorted(total_rank.items(), key=lambda x: x[1], reverse=True)
     
-    #print(sorted(total_rank))  
     for val in total_rank:    
         l = Link.objects.filter(link=val[0])
         links = links | l   
@@ -427,9 +432,6 @@ def q(request,query=None):
         correction = difflib.get_close_matches(query, list(words_objects))
         if len(correction) != 0:
             return(qc(request,correction[0],True))
-        #     return render(request,"engine/index.html",{
-        #     "correction": correction[0]
-        # })
         else:
             return render(request, "engine/no.html")
         
@@ -441,9 +443,10 @@ def q(request,query=None):
             search_obj = Searches.objects.get(string = query) 
             search_obj.frequency = search_obj.frequency + 1   
         search_obj.save()  
-
+        merged_list = tuple(zip(links, all_matches)) 
+        print(merged_list)
         return render(request, "engine/serp.html",{
-            "search_results":links , "correction": ""
+            "search_results":merged_list , "correction": "",
         })
 
 def qc(request,correction,ddm = False):
@@ -454,7 +457,18 @@ def qc(request,correction,ddm = False):
     temp = []
     df = pd.read_csv('term_dm.csv', index_col = 'Unnamed: 0')
     results = get_query_links(correction,df, df1)
+    all_matches = []
     for result in results:
+        html = urllib.request.urlopen(result).read().decode('utf8')
+        html[:60]
+        soup = bsf(html, 'lxml')
+        para = soup.select('p')
+        para = para[0].getText()
+        print(para)
+        sentences = nltk.sent_tokenize(para)
+        matches = [sentence for sentence in sentences if correction in sentence]
+        all_matches.append(matches[0])
+        print(matches[0])
         l = Link.objects.filter(link=result)
         links = links | l
     all_obj = Searches.objects.filter(string = correction)
@@ -467,11 +481,17 @@ def qc(request,correction,ddm = False):
 
     if(not ddm):
         return(q(request,correction))
-
+    merged_list = tuple(zip(links, all_matches)) 
+    print(merged_list)
+    print(merged_list)
     return render(request, "engine/serp.html",{
-        "search_results":links , "correction": correction
+        "search_results":merged_list , "correction": correction,
     })    
     
 
 def about_us(request):
     return render(request, 'engine/about_us.html')
+
+@register.filter
+def index1(indexable, i):
+    return indexable[i]    
