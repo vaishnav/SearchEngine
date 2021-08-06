@@ -6,7 +6,7 @@
 
 <div class="abtus container">
     <h1 class="display-3">How Our Search Engine works</h1>
-    <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis dolorem pariatur et qui omnis sint ut ex dicta, quidem nesciunt illo ducimus. Modi dicta deserunt fugiat nulla minus quia vitae quos aliquid. Odio ipsum dolorem commodi perferendis provident, totam magnam!</p>
+    <p class="lead">There are multiple steps involved, from user entering the query, the processing of query in the backend, providing best result for the query and Giving an intuitive and friendly UI to the whole process.</p>
 
     <div class="">
         <div class="row abtus_unit">
@@ -15,13 +15,24 @@
             </div>
             <div class="col-md-7">
                 <h1 class="display-5">Ranking</h1>
-                <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum repellat accusamus quidem facilis. Excepturi velit ea laudantium cupiditate, ratione ut!</p>
+                <p class="lead">Ranking is a process where we figure out quality of our webpages. We are using a variant of Page Rank Algorithm to rank webpages from best to worst. Page Rank was originally developed by Larry Page (Co-Founder of Google) and Google still uses it. For our case we are using backlinks (number of other pages that have links to our current page) as a parameter for judging. The current variant of PageRank we are using is know as random surfer model.</p>
+                <p class="lead">Important points</p>
+                <ul class="lead">
+                    <li>We first figure out how sites are linking to one-other </li>
+                    <li>points regarding random surfer model</li>
+                    <li>Ranking process gives us a rank about how well our pages holds compare to other pages on network</li>
+                </ul>
             </div>
         </div>
         <div class="row abtus_unit">
             <div class="col-md-7">
                 <h1 class="display-5">Indexing</h1>
-                <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum repellat accusamus quidem facilis. Excepturi velit ea laudantium cupiditate, ratione ut!</p>
+                <p class="lead">Indexing is the process where we process all the data present on a page. We are using Aritificial Interlligence and Natural Language Processing to filter out the content of page from unnecessary terms and make a dataset of all the key terms of a webpage. We are using Cosine Similarity to check how which webpage best match to the given query.</p>
+                <p class="lead">Important points</p>
+                <ul class="lead">
+                    <li>Filter out webpages using AI and natural language processing</li>
+                    <li>Using Cosine Similarity to determine which page best suits for given query</li>
+                </ul>
             </div>
             <div class="col-md-5">
                 <img src="{% static 'engine/images/indexing.png' %}" alt="" class="img-fluid">
@@ -33,10 +44,18 @@
             </div>
             <div class="col-md-7">
                 <h1 class="display-5">Crawling</h1>
-                <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum repellat accusamus quidem facilis. Excepturi velit ea laudantium cupiditate, ratione ut!</p>
+                <p class="lead">Crawling is the process where we got to each page one by one and collect necessary infomation from them. We implement a basic web crawler, which is a bot that starts from a predefined web-page and traverse through all the pages one by one and collectign information like linking of sites and this information is transferred to Ranker and Indexer for later use</p>
+                <p class="lead">Important points</p>
+                <ul class="lead">
+                    <li>Designing a web-crawler that starts from predefined page and traverse to each page</li>
+                    <li>While traversing each site necessary data is collected</li>
+                </ul>
             </div>
         </div>
+
+        <div style="height: 100px;"> <!-- leave this div empty here --></div>
     </div>
+
 
 </div>
 

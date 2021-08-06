@@ -209,7 +209,9 @@ body::-webkit-scrollbar-thumb {
 }
 
 
-
+.abtus_unit ul {
+    color: var(--bg-light_white);
+}
 
 
 
