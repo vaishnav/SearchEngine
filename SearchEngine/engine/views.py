@@ -412,7 +412,7 @@ def q(request,query=None):
         sentences = nltk.sent_tokenize(para)
         matches = [sentence for sentence in sentences if query in sentence]
         if len(matches) == 0:
-            matches = [sentence for sentence in sentences if query.capitalize() in sentence]
+            matches = [sentence for sentence in sentences if query.upper() in sentence.upper()]
 
         all_matches.append(matches[0])
         print(matches[0])
@@ -467,6 +467,9 @@ def qc(request,correction,ddm = False):
         print(para)
         sentences = nltk.sent_tokenize(para)
         matches = [sentence for sentence in sentences if correction in sentence]
+        if len(matches) == 0:
+            matches = [sentence for sentence in sentences if query.upper() in sentence.upper()]
+
         all_matches.append(matches[0])
         print(matches[0])
         l = Link.objects.filter(link=result)
