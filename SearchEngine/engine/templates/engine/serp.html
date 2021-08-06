@@ -15,8 +15,8 @@
       {% for Link in search_results %}
       <div class="serp_res">
          
-            <a href={{Link.link}} class="upper"> {{Link.0.title|title}} | This is a sample page</a>
-            <a href={{Link.link}} class="lower"> {{Link.0.link}}</a>
+            <a href={{Link.0.link}} class="upper"> {{Link.0.title|title}} | This is a sample page</a>
+            <a href={{Link.0.link}} class="lower"> {{Link.0.link}}</a>
             <p>{{Link.1}}</p>
 
       
