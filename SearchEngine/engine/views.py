@@ -413,6 +413,9 @@ def q(request,query=None):
         matches = [sentence for sentence in sentences if query in sentence]
         if len(matches) == 0:
             matches = [sentence for sentence in sentences if query.upper() in sentence.upper()]
+        if len(matches) == 0:
+            for word in query:
+                matches = [sentence for sentence in sentences if word.upper() in sentence.upper()]
 
         all_matches.append(matches[0])
         print(matches[0])
@@ -469,7 +472,9 @@ def qc(request,correction,ddm = False):
         matches = [sentence for sentence in sentences if correction in sentence]
         if len(matches) == 0:
             matches = [sentence for sentence in sentences if query.upper() in sentence.upper()]
-
+        if len(matches) == 0:
+            for word in query:
+                matches = [sentence for sentence in sentences if word.upper() in sentence.upper()]
         all_matches.append(matches[0])
         print(matches[0])
         l = Link.objects.filter(link=result)
